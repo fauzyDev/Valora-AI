@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Valora AI 🚀
 
-## Getting Started
+MIKOCHAT-AI adalah platform percakapan cerdas berbasis AI yang dibangun dengan **Next.js 16**, mengintegrasikan model bahasa besar (LLM) **Google Gemini** untuk memberikan pengalaman chat yang responsif, cerdas, dan kaya fitur.
 
-First, run the development server:
+## ✨ Fitur Utama
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Real-time AI Chat**: Respons streaming cepat menggunakan model Gemini terbaru.
+- **Dukungan Lampiran Kaya**: Unggah dan analisis dokumen (PDF, Word, TXT) serta gambar secara langsung dalam percakapan.
+- **Smart Context**: Sistem chunking dokumen otomatis untuk memberikan konteks yang relevan kepada AI.
+- **Manajemen Riwayat Chat**: Simpan dan akses kembali percakapan Anda dengan integrasi **Supabase**.
+- **Performa Tinggi**: Caching respons dan rate limiting menggunakan **Upstash Redis**.
+- **UI Modern**: Desain elegan dengan **Tailwind CSS**, **Framer Motion**, dan dukungan Mode Gelap/Terang.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Stack Teknologi
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Frontend**: [Next.js](https://nextjs.org/), [React 19](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/)
+- **AI Model**: [Google Generative AI (Gemini)](https://ai.google.dev/)
+- **Database & Auth**: [Supabase](https://supabase.com/)
+- **Caching & Rate Limiting**: [Upstash Redis](https://upstash.com/)
+- **Animasi**: [Framer Motion](https://www.framer.com/motion/)
+- **Runtime**: [Bun](https://bun.sh/)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 🚀 Memulai Cepat
 
-## Learn More
+### Prasyarat
+- [Bun](https://bun.sh/) terinstal di sistem Anda.
+- Akun Google AI SDK (untuk API Key Gemini).
+- Proyek Supabase dan Upstash Redis.
 
-To learn more about Next.js, take a look at the following resources:
+### Instalasi
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Klon repository:
+   ```bash
+   git clone https://github.com/fauzyDev/MIKOCHAT-AI.git
+   cd MIKOCHAT-AI
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+2. Instal dependensi:
+   ```bash
+   bun install
+   ```
 
-## Deploy on Vercel
+3. Konfigurasi variabel lingkungan:
+   Salin `.env.local.example` ke `.env.local` dan isi nilai yang diperlukan.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Jalankan server pengembangan:
+   ```bash
+   bun dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
+
+## 📚 Dokumentasi Lengkap
+
+Untuk detail teknis lebih mendalam, silakan lihat folder `docs`:
+
+- [Ringkasan Dokumentasi](docs/README.md)
+- [Arsitektur Sistem](docs/architecture.md)
+- [Panduan Setup Detail](docs/setup.md)
+- [Dokumentasi API](docs/api.md)
+- [Komponen Chat & Flow](docs/chat.md)
+
+---
+Dibuat oleh [Fauzy](https://github.com/fauzyDev)

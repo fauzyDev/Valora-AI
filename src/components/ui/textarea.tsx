@@ -1,3 +1,12 @@
+/**
+ * textarea.tsx
+ *
+ * Komponen `Textarea` yang merupakan pembungkus elemen HTML `<textarea>` dengan
+ * kelas gaya bawaan (Tailwind) dan forwarding `ref`.
+ * Digunakan di area input chat untuk memungkinkan auto-resize dan styling
+ * konsisten di seluruh aplikasi.
+ */
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
 

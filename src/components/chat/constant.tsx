@@ -1,6 +1,11 @@
-import { ChatIcon, HistoryIcon, SettingsIcon } from "@/components/chat/icons";
+/**
+ * constant.tsx
+ *
+ * Konstanta dan mock data ringan yang digunakan oleh UI chat, seperti
+ * daftar navigasi dan inisialisasi pesan kosong.
+ */
 
-export const MODELS = ["GPT-4", "Claude 3.5", "Local Llama"];
+import { ChatIcon, HistoryIcon, SettingsIcon } from "@/components/chat/icons";
 
 interface NavItem {
   icon: React.ReactNode;
@@ -13,18 +18,12 @@ export const NAV_ITEMS: NavItem[] = [
   { icon: <SettingsIcon />, label: "Design System" },
 ];
 
-export const CODE_SNIPPET = `const Button = ({ variant, children, ...props }) => {
-  const baseStyles = "px-6 py-2 rounded-lg transition-all font-semibold";
-  const variants = {
-    primary: "bg-indigo-600 text-white hover:bg-indigo-500",
-    secondary: "border border-white/10 text-slate-300 hover:bg-white/5",
-  };
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  time?: string;
+  isStreaming?: boolean;
+}
 
-  return (
-    <button className={\`\${baseStyles} \${variants[variant]}\`} {...props}>
-      {children}
-    </button>
-  );
-};`;
-
-export const INITIAL_MESSAGES: any[] = [];
+export const INITIAL_MESSAGES: Message[] = [];

@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * avatar.tsx
+ *
+ * Komponen grup avatar dan utilitas terkait — pembungkus untuk primitive
+ * Avatar dari `@base-ui/react/avatar`. Menyediakan `Avatar`, `AvatarImage`,
+ * `AvatarFallback`, `AvatarBadge`, dan `AvatarGroup`.
+ *
+ * Semua dokumentasi dalam Bahasa Indonesia.
+ */
+
 import * as React from "react"
 import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar"
 

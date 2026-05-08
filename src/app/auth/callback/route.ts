@@ -1,3 +1,11 @@
+/**
+ * auth/callback/route.ts
+ *
+ * Route handler untuk callback OAuth. Menerima `code` dari provider (Google),
+ * menukarkan code menjadi session Supabase, dan mengarahkan pengguna kembali
+ * ke aplikasi.
+ */
+
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 

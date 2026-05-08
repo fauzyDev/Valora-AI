@@ -1,5 +1,13 @@
 "use client"
 
+/**
+ * separator.tsx
+ *
+ * Pembungkus untuk komponen Separator dari `@base-ui/react/separator`.
+ * Menyediakan prop `orientation` (horizontal/vertical) dan meneruskan kelas
+ * tambahan melalui `className`.
+ */
+
 import { Separator as SeparatorPrimitive } from "@base-ui/react/separator"
 import React from "react";
 import { cn } from "@/lib/utils"

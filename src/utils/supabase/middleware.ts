@@ -1,5 +1,13 @@
-import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+/**
+ * utils/supabase/middleware.ts
+ *
+ * Middleware helper untuk memperbarui session Supabase pada request
+ * masuk. Digunakan oleh `proxy` agar SSR dan middleware dapat menyelaraskan
+ * cookie session antara server dan edge.
+ */
+
+import { createServerClient } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({

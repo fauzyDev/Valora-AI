@@ -1,38 +1,69 @@
-import { FC } from "react";
-import { SparkleIcon } from "@/components/chat/icons";
+/**
+ * AIMessage.tsx
+ *
+ * Komponen yang merender pesan dari model AI. Mendukung streaming teks
+ * (progressive update) dan aksi seperti menyalin isi pesan.
+ */
+
+import { FC, useState, memo } from "react";
+import { Sparkles, Copy, Check } from "lucide-react";
 import MarkdownRenderer from "./MarkdownRenderer";
+import { toast } from "sonner";
 
 interface AIMessageProps {
   content: string;
+  isStreaming?: boolean;
 }
 
-export const AIMessage: FC<AIMessageProps> = ({ content }) => {
-  const chips = ["How to add icons?", "Explain variant logic"];
+const AIMessageComponent: FC<AIMessageProps> = ({ content, isStreaming }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      toast.success("Message copied to clipboard");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Failed to copy message");
+    }
+  };
 
   return (
-    <div className="flex gap-3 md:gap-6">
+    <div className="flex gap-3 md:gap-4 max-w-[90%] md:max-w-[85%] group">
       {/* AI avatar */}
-      <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-600/20 shrink-0 flex items-center justify-center border border-indigo-500/30 self-start mt-0.5">
-        <span className="text-indigo-400 scale-75 md:scale-100"><SparkleIcon /></span>
+      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 shrink-0 flex items-center justify-center border border-indigo-400/50 self-start mt-1 shadow-lg shadow-indigo-500/30 flex-shrink-0">
+        <Sparkles className="w-4 h-4 text-white" />
       </div> 
 
-
       {/* Content */}
-      <div className="flex-1 space-y-4 min-w-0">
-        <MarkdownRenderer content={content} />
-
-        {/* Suggestion chips */}
-        <div className="flex flex-wrap gap-2 pt-1">
-          {chips.map((chip) => (
-            <button
-              key={chip}
-              className="px-4 py-2 bg-slate-800 border border-white/5 rounded-full text-xs font-semibold text-slate-400 hover:text-white hover:border-indigo-500/50 transition-all"
-            >
-              {chip}
-            </button>
-          ))}
+      <div className="flex-1 min-w-0 flex flex-col gap-2">
+        <div className="bg-slate-800/40 border border-slate-700/50 rounded-2xl rounded-tl-sm p-4 md:p-5 shadow-lg shadow-slate-900/30 backdrop-blur-sm">
+          <MarkdownRenderer content={content} isStreaming={isStreaming} />
+        </div>
+        
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <button
+            onClick={handleCopy}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 hover:text-white text-xs font-medium transition-colors duration-200"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3.5 h-3.5" />
+                Copied
+              </>
+            ) : (
+              <>
+                <Copy className="w-3.5 h-3.5" />
+                Copy
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export const AIMessage = memo(AIMessageComponent);

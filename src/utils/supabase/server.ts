@@ -1,5 +1,13 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+/**
+ * utils/supabase/server.ts
+ *
+ * Helper untuk membuat instance Supabase pada lingkungan server-side (SSR).
+ * Menggunakan cookie store Next.js agar session Supabase dapat diambil dari
+ * cookie yang sama dengan request pengguna.
+ */
+
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 export async function createClient() {
   const cookieStore = await cookies()

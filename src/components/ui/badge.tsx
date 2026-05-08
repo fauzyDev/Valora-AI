@@ -1,7 +1,14 @@
+/**
+ * badge.tsx
+ *
+ * Komponen `Badge` yang fleksibel untuk menampilkan label kecil/penanda.
+ * Menggunakan `class-variance-authority` untuk varian gaya dan `useRender`
+ * dari base-ui untuk mendukung tag kustom via `render` prop.
+ */
+
 import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
 import { cva, type VariantProps } from "class-variance-authority";
-import React from "react";
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(

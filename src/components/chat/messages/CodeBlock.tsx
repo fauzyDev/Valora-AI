@@ -1,3 +1,10 @@
+/**
+ * CodeBlock.tsx
+ *
+ * Komponen untuk merender blok kode dengan highlight syntax menggunakan
+ * `react-syntax-highlighter`. Menyediakan tombol untuk menyalin isi kode.
+ */
+
 "use client";
 
 import React, { useState, memo } from "react";

@@ -1,9 +1,22 @@
 "use client"
 
-import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip"
-import React from "react";
-import { cn } from "@/lib/utils"
+/**
+ * tooltip.tsx
+ *
+ * Wrappers kecil di atas komponen Tooltip dari paket `@base-ui/react/tooltip`.
+ * Semua dokumentasi disediakan dalam Bahasa Indonesia.
+ */
 
+import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
+import React from "react";
+import { cn } from "@/lib/utils";
+
+/**
+ * TooltipProvider
+ *
+ * Provider yang membungkus tooltip (mis. untuk mengatur delay global).
+ * Parameter `delay` default ke 0.
+ */
 function TooltipProvider({
   delay = 0,
   ...props
@@ -11,16 +24,36 @@ function TooltipProvider({
   return (<TooltipPrimitive.Provider data-slot="tooltip-provider" delay={delay} {...props} />);
 }
 
+/**
+ * Tooltip
+ *
+ * Root wrapper untuk instance tooltip. Gunakan ini untuk mengelompokkan
+ * `TooltipTrigger` dan `TooltipContent`.
+ */
 function Tooltip({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
 }
 
+/**
+ * TooltipTrigger
+ *
+ * Trigger yang akan menampilkan tooltip saat di-hover atau difokus.
+ * Komponen ini hanya meneruskan props ke `TooltipPrimitive.Trigger`.
+ */
 function TooltipTrigger({
+  children,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
+  return (
+    <TooltipPrimitive.Trigger 
+      data-slot="tooltip-trigger"
+      {...props}
+    >
+      {children}
+    </TooltipPrimitive.Trigger>
+  );
 }
 
 interface TooltipContentProps extends React.ComponentProps<typeof TooltipPrimitive.Popup> {
@@ -30,6 +63,12 @@ interface TooltipContentProps extends React.ComponentProps<typeof TooltipPrimiti
   alignOffset?: number;
 }
 
+/**
+ * TooltipContent
+ *
+ * Konten tooltip yang muncul. Parameter seperti `side`, `align`, dan `sideOffset`
+ * dapat dikonfigurasi untuk mengubah posisi popup.
+ */
 function TooltipContent({
   className,
   side = "top",

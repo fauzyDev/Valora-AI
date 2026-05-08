@@ -1,12 +1,18 @@
-import type { Metadata } from "next";
-import LandingPage from "@/components/landing/LandingPage";
+/**
+ * app/page.tsx
+ *
+ * Halaman utama (root) yang merender komponen landing `VeloraLanding`.
+ * Dokumentasi ini ditulis dalam Bahasa Indonesia.
+ */
+
+import VeloraLanding from '@/components/landing/VeloraLanding';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'NexusAI | The Next Generation of Intelligence',
-  description: 'Experience the future of AI chat with Nexus AI. Fast, secure, and incredibly smart.',
+  title: "VeloraAI | Home",
+  description: "Experience the next generation of AI workspaces. High-performance chat, deep analysis, and seamless integration.",
 };
 
 export default function Page() {
-  return <LandingPage />;
+  return <VeloraLanding />;
 }
-

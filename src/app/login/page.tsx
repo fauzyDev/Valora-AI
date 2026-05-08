@@ -1,12 +1,24 @@
+/**
+ * login/page.tsx
+ *
+ * Halaman login yang menyediakan autentikasi OAuth via Supabase (Google).
+ * Mengandung UI untuk memulai proses login dan menampilkan pesan error
+ * bila autentikasi gagal.
+ */
+
 "use client";
 
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { SparkleIcon } from "@/components/chat/icons";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function LoginPage() {
+function LoginContent() {
   const supabase = createClient();
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
 
   const handleLogin = async () => {
     await supabase.auth.signInWithOAuth({
@@ -26,14 +38,23 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8 text-center">
         <Link href="/" className="inline-flex items-center gap-2 text-indigo-400 mb-8 hover:opacity-80 transition-opacity">
           <SparkleIcon />
-          <span className="font-extrabold text-white text-3xl tracking-tighter">NexusAI</span>
+          <span className="font-extrabold text-white text-3xl tracking-tighter">VeloraAI</span>
         </Link>
 
         <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 md:p-12 backdrop-blur-3xl shadow-2xl space-y-6">
           <div className="space-y-2">
             <h1 className="text-3xl font-black text-white tracking-tight">Welcome Back</h1>
-            <p className="text-slate-400 font-medium">Log in to continue your journey with Nexus AI.</p>
+            <p className="text-slate-400 font-medium">Log in to continue your journey with Velora AI.</p>
           </div>
+
+          {/* Show error message if auth failed */}
+          {error && (
+            <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-300 font-medium">
+              {error === "auth-code-error"
+                ? "Authentication failed. Please try again."
+                : `Error: ${error}`}
+            </div>
+          )}
 
           <Button 
             onClick={handleLogin}
@@ -60,5 +81,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+        <div className="text-slate-400">Loading...</div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }
