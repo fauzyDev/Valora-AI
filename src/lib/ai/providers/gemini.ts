@@ -12,7 +12,7 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/ge
 const apiKey = process.env.SECRET_GEMINI_API_KEY;
 
 if (!apiKey) {
-  console.warn("[Valora AI] WARNING: SECRET_GEMINI_API_KEY is not set.");
+  console.warn("[Velora AI] WARNING: SECRET_GEMINI_API_KEY is not set.");
 }
 
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;

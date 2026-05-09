@@ -1,6 +1,6 @@
 /**
  * @file router.ts
- * @description Orchestrator utama untuk sistem AI Valora.
+ * @description Orchestrator utama untuk sistem AI Velora.
  *
  * Satu entry point yang menangani:
  *   1. Deteksi kompleksitas prompt (termasuk multi-turn awareness)
@@ -42,7 +42,7 @@ export async function routeAndStream(
 
   const routingMs = Date.now() - startTime;
   console.log(
-    `[Valora AI] Routing: complexity=${complexity} → model=${selectedModel.name} (${selectedModel.id}) [${routingMs}ms]`
+    `[Velora AI] Routing: complexity=${complexity} → model=${selectedModel.name} (${selectedModel.id}) [${routingMs}ms]`
   );
 
   // 3. Stream dengan fallback otomatis

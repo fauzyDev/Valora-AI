@@ -1,6 +1,6 @@
-# Valora AI 🚀
+# Velora AI 🚀
 
-MIKOCHAT-AI adalah platform percakapan cerdas berbasis AI yang dibangun dengan **Next.js 16**, mengintegrasikan model bahasa besar (LLM) **Google Gemini** untuk memberikan pengalaman chat yang responsif, cerdas, dan kaya fitur.
+Velora AI adalah platform percakapan cerdas berbasis AI yang dibangun dengan **Next.js 16**, mengintegrasikan model bahasa besar (LLM) **Google Gemini** untuk memberikan pengalaman chat yang responsif, cerdas, dan kaya fitur.
 
 ## ✨ Fitur Utama
 
@@ -31,8 +31,8 @@ MIKOCHAT-AI adalah platform percakapan cerdas berbasis AI yang dibangun dengan *
 
 1. Klon repository:
    ```bash
-   git clone https://github.com/fauzyDev/MIKOCHAT-AI.git
-   cd MIKOCHAT-AI
+   git clone https://github.com/fauzyDev/Velora AI.git
+   cd Velora AI
    ```
 
 2. Instal dependensi:

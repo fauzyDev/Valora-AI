@@ -13,14 +13,14 @@ import { ChatMessage } from "./gemini";
 const apiKey = process.env.SECRET_OPENROUTER_API_KEY;
 
 if (!apiKey) {
-  console.warn("[Valora AI] WARNING: OPENROUTER_API_KEY is not set.");
+  console.warn("[Velora AI] WARNING: OPENROUTER_API_KEY is not set.");
 }
 
 const openRouter = apiKey
   ? new OpenRouter({
       apiKey,
-      httpReferer: "https://valora-ai.local",
-      appTitle: "Valora AI",
+      httpReferer: "https://velora-ai.local",
+      appTitle: "Velora AI",
     })
   : null;
 

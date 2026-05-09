@@ -18,12 +18,12 @@ import { extractText as extractPdfText } from "unpdf";
 export async function extractText(buffer: Buffer, fileType: string): Promise<string> {
     const type = fileType.toLowerCase();
 
-    console.log(`[Valora AI] Extracting text for type: ${fileType}, buffer size: ${buffer.byteLength}`);
+    console.log(`[Velora AI] Extracting text for type: ${fileType}, buffer size: ${buffer.byteLength}`);
     
     // Penanganan file PDF
     if (type.includes("pdf") || type.endsWith(".pdf")) {
         if (buffer.byteLength > 5 * 1024 * 1024) { // 5MB limit
-            console.warn(`[Valora AI] PDF file exceeded 5MB limit (${buffer.byteLength} bytes).`);
+            console.warn(`[Velora AI] PDF file exceeded 5MB limit (${buffer.byteLength} bytes).`);
             throw new Error("File PDF terlalu besar (maks 5MB)");
         }
 
@@ -33,7 +33,7 @@ export async function extractText(buffer: Buffer, fileType: string): Promise<str
             const fullText = Array.isArray(text) ? text.join("\n") : (text || "");
 
             if (!fullText || !fullText.trim()) {
-                console.warn("[Valora AI] PDF extraction returned empty text. Possibly an image-based PDF.");
+                console.warn("[Velora AI] PDF extraction returned empty text. Possibly an image-based PDF.");
                 return "Ini adalah file PDF (mungkin berupa gambar/scan), teks tidak dapat diekstraksi secara langsung.";
             }
 
@@ -42,7 +42,7 @@ export async function extractText(buffer: Buffer, fileType: string): Promise<str
                 .replace(/[ \t]+/g, " ")
                 .trim();
         } catch (err) {
-            console.error("[Valora AI] Unpdf extraction error:", err);
+            console.error("[Velora AI] Unpdf extraction error:", err);
             throw new Error("Gagal membaca file PDF. Pastikan file tidak terenkripsi.");
         }
     }
@@ -58,7 +58,7 @@ export async function extractText(buffer: Buffer, fileType: string): Promise<str
             const result = await mammoth.extractRawText({ buffer });
             return result.value;
         } catch (err) {
-            console.error("[Valora AI] Mammoth extraction error:", err);
+            console.error("[Velora AI] Mammoth extraction error:", err);
             throw new Error("Gagal membaca file Word (.docx)");
         }
     }
@@ -68,6 +68,6 @@ export async function extractText(buffer: Buffer, fileType: string): Promise<str
         throw new Error("Format .doc (Word lama) tidak didukung. Silakan simpan sebagai .docx atau .pdf.");
     }
 
-    console.warn(`[Valora AI] Unsupported file type attempt: ${fileType}`);
+    console.warn(`[Velora AI] Unsupported file type attempt: ${fileType}`);
     throw new Error(`Hanya mendukung file PDF dan DOCX. Tipe file ${fileType} tidak didukung.`);
 }

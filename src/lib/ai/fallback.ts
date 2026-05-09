@@ -96,7 +96,7 @@ export async function streamWithFallback(
 
     try {
       console.log(
-        `[Valora AI] Trying model: ${modelId}${i > 0 ? ` (fallback #${i})` : ""}`
+        `[Velora AI] Trying model: ${modelId}${i > 0 ? ` (fallback #${i})` : ""}`
       );
 
       // Pastikan model Info ditemukan
@@ -117,18 +117,18 @@ export async function streamWithFallback(
         modelId
       );
 
-      console.log(`[Valora AI] ✓ Success with model: ${modelId}`);
+      console.log(`[Velora AI] ✓ Success with model: ${modelId}`);
       return stream;
     } catch (err) {
       lastError = err instanceof Error ? err : new Error(String(err));
       const category = categorizeError(lastError);
 
       console.warn(
-        `[Valora AI] ✗ Model ${modelId} failed [${category}]: ${lastError.message}`
+        `[Velora AI] ✗ Model ${modelId} failed [${category}]: ${lastError.message}`
       );
 
       if (!isLastModel) {
-        console.log(`[Valora AI] → Falling back to next model...`);
+        console.log(`[Velora AI] → Falling back to next model...`);
       }
       // Lanjut ke model berikutnya
     }

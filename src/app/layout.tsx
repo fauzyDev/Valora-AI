@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "id_ID",
-    url: "https://valora-ai-theta.vercel.app",
+    url: "https://velora-ai-theta.vercel.app",
     title: "VeloraAI | The Next Generation of Intelligence",
     description: "Experience the future of AI chat with Velora AI. Fast, secure, and incredibly smart.",
     siteName: "VeloraAI",

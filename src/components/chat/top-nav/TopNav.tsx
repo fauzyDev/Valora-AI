@@ -1,6 +1,6 @@
 /**
  * @file TopNav.tsx
- * @description Header navigasi untuk area chat. Menampilkan branding Valora AI
+ * @description Header navigasi untuk area chat. Menampilkan branding Velora AI
  * dan tombol menu mobile.
  */
 
@@ -33,7 +33,7 @@ export const TopNav: FC<TopNavProps> = memo(({ onToggleSidebar }) => {
         {/* Branding badge — replaces old model selector */}
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/50 border border-white/5">
           <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span className="text-xs font-medium text-slate-300">Valora AI</span>
+          <span className="text-xs font-medium text-slate-300">Velora AI</span>
         </div>
       </div>
     </header>

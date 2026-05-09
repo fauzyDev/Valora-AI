@@ -1,6 +1,6 @@
 /**
  * @file prompt.ts
- * @description System instruction dan prompt builder untuk Valora AI.
+ * @description System instruction dan prompt builder untuk Velora AI.
  *
  * Memastikan semua model Gemini berperilaku konsisten sebagai
  * satu kepribadian AI yang sama.

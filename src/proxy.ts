@@ -10,6 +10,20 @@ import { type NextRequest } from 'next/server';
 import { updateSession } from '@/utils/supabase/middleware';
 
 export async function proxy(request: NextRequest) {
+  // CSRF Protection: Cek Origin untuk request POST ke API
+  if (request.method === 'POST' && request.nextUrl.pathname.startsWith('/api')) {
+    const origin = request.headers.get('origin');
+    const host = request.headers.get('host');
+    
+    // Jika ada header origin, pastikan cocok dengan host aplikasi
+    if (origin && !origin.includes(host || "")) {
+      return new Response(JSON.stringify({ error: "Invalid origin (CSRF Protection)" }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
   return await updateSession(request)
 }
 

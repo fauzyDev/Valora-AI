@@ -1,65 +1,85 @@
 /**
  * @file rate-limiter.ts
- * @description Implementasi rate limiter sederhana berbasis memori (Map).
- * Catatan: Gunakan Redis untuk lingkungan produksi dengan skala horizontal.
+ * @description Implementasi rate limiter terdistribusi menggunakan Redis (Upstash)
+ * dengan fallback ke memori lokal jika Redis tidak tersedia.
  */
+
+import { redis } from "./redis";
 
 interface RateLimitEntry {
   count: number;
   resetTime: number;
 }
 
-const store = new Map<string, RateLimitEntry>();
-
-// Pembersihan berkala entri yang kedaluwarsa untuk mencegah kebocoran memori
-const CLEANUP_INTERVAL = 60_000; // 1 menit
+// Fallback store untuk memori lokal (jika Redis mati atau tidak dikonfigurasi)
+const localStore = new Map<string, RateLimitEntry>();
+const CLEANUP_INTERVAL = 60_000;
 let lastCleanup = Date.now();
 
-/**
- * Menghapus entri rate limit yang sudah melewati waktu reset.
- */
-function cleanupExpiredEntries() {
+function cleanupLocalStore() {
   const now = Date.now();
   if (now - lastCleanup < CLEANUP_INTERVAL) return;
-
   lastCleanup = now;
 
-  // Mencegah memory leak dengan membatasi ukuran Map jika diserang ribuan IP (Fail-Open Best Effort)
-  if (store.size > 5000) {
-    store.clear();
+  if (localStore.size > 5000) {
+    localStore.clear();
     return;
   }
 
-  for (const [key, entry] of store) {
+  for (const [key, entry] of localStore) {
     if (now > entry.resetTime) {
-      store.delete(key);
+      localStore.delete(key);
     }
   }
 }
 
 /**
- * Memeriksa apakah sebuah pengenal (misal: IP atau User ID) telah melebihi batas permintaan.
- * Default: 5 permintaan per menit.
- * 
- * @param {string} identifier Pengenal unik untuk subjek yang dibatasi.
- * @param {number} [limit=5] Jumlah maksimal permintaan dalam jendela waktu.
- * @param {number} [windowMs=60000] Durasi jendela waktu dalam milidetik.
- * @returns {{ success: boolean, remaining: number, reset: number }} Objek status rate limit.
+ * Memeriksa apakah sebuah pengenal (IP/User ID) telah melebihi batas.
+ * Menggunakan Redis INCR + EXPIRE untuk presisi di lingkungan terdistribusi.
  */
-export function checkRateLimit(identifier: string, limit: number = 5, windowMs: number = 60000): {
+export async function checkRateLimit(
+  identifier: string, 
+  limit: number = 10, 
+  windowMs: number = 60000
+): Promise<{
   success: boolean;
   remaining: number;
   reset: number;
-} {
+}> {
   const now = Date.now();
+  const key = `ratelimit:${identifier}`;
 
-  cleanupExpiredEntries();
+  // 1. Coba menggunakan Redis jika tersedia
+  if (redis) {
+    try {
+      const current = await redis.incr(key);
+      
+      // Jika ini request pertama (count == 1), atur waktu kedaluwarsa
+      if (current === 1) {
+        await redis.pexpire(key, windowMs);
+      }
+
+      const pttl = await redis.pttl(key);
+      const resetTime = pttl > 0 ? now + pttl : now + windowMs;
+
+      return {
+        success: current <= limit,
+        remaining: Math.max(0, limit - current),
+        reset: resetTime,
+      };
+    } catch (error) {
+      console.error("[Velora AI] Redis Rate Limiter Error, falling back to local memory:", error);
+      // Lanjut ke fallback di bawah jika Redis gagal
+    }
+  }
+
+  // 2. Fallback ke Memori Lokal (untuk serverless instance tunggal atau saat Redis down)
+  cleanupLocalStore();
   
-  const existing = store.get(identifier);
+  const existing = localStore.get(identifier);
 
-  // Jika entri belum ada atau sudah kedaluwarsa, buat entri baru
   if (!existing || now > existing.resetTime) {
-    store.set(identifier, {
+    localStore.set(identifier, {
       count: 1,
       resetTime: now + windowMs,
     });
@@ -71,9 +91,7 @@ export function checkRateLimit(identifier: string, limit: number = 5, windowMs: 
     };
   }
 
-  // Tambah hit count
   existing.count++;
-
   const isAllowed = existing.count <= limit;
   
   return {
@@ -82,3 +100,4 @@ export function checkRateLimit(identifier: string, limit: number = 5, windowMs: 
     reset: existing.resetTime,
   };
 }
+

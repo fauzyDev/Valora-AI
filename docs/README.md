@@ -1,6 +1,6 @@
-# Pusat Dokumentasi MIKOCHAT-AI
+# Pusat Dokumentasi Velora AI
 
-Selamat datang di pusat dokumentasi teknis MIKOCHAT-AI. Dokumen-dokumen di bawah ini memberikan penjelasan mendalam tentang arsitektur, implementasi, dan penggunaan repository ini.
+Selamat datang di pusat dokumentasi teknis Velora AI. Dokumen-dokumen di bawah ini memberikan penjelasan mendalam tentang arsitektur, implementasi, dan penggunaan repository ini.
 
 ## Daftar Dokumen
 

@@ -48,11 +48,11 @@ async function processAttachments(attachments: AttachmentInput[]): Promise<strin
     try {
       const filePath = file.path || file.file_url;
       if (!filePath) {
-        console.warn(`[Valora AI] Skipping attachment without path: ${file.file_name}`);
+        console.warn(`[Velora AI] Skipping attachment without path: ${file.file_name}`);
         return "";
       }
 
-      console.log(`[Valora AI] Processing attachment: ${file.file_name || filePath}`);
+      console.log(`[Velora AI] Processing attachment: ${file.file_name || filePath}`);
 
       const buffer = await downloadFile(filePath);
       const fullText = await extractText(buffer, file.file_type || "");
@@ -60,7 +60,7 @@ async function processAttachments(attachments: AttachmentInput[]): Promise<strin
       return selectRelevantChunks(chunks, 3);
     } catch (err) {
       console.error(
-        `[Valora AI] Failed to process file ${file.file_name || "unknown"}:`,
+        `[Velora AI] Failed to process file ${file.file_name || "unknown"}:`,
         err
       );
       return "";
@@ -104,7 +104,7 @@ export async function streamChat(
   if (hasAttachments) {
     context = await processAttachments(attachments);
     console.log(
-      `[Valora AI] Extracted context from ${attachments.length} file(s): ${context.length} chars`
+      `[Velora AI] Extracted context from ${attachments.length} file(s): ${context.length} chars`
     );
   }
 
@@ -115,7 +115,7 @@ export async function streamChat(
   const stream = await routeAndStream(finalPrompt, history, hasAttachments);
 
   const totalMs = Date.now() - startTime;
-  console.log(`[Valora AI] Pipeline ready in ${totalMs}ms (streaming started)`);
+  console.log(`[Velora AI] Pipeline ready in ${totalMs}ms (streaming started)`);
 
   return stream;
 }

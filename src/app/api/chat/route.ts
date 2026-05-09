@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   try {
     // 1. Rate Limiting
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "anonymous";
-    const { success, remaining, reset } = checkRateLimit(ip);
+    const { success, remaining, reset } = await checkRateLimit(ip);
 
     if (!success) {
       return new Response(
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     // Cek apakah ada di cache
     const cachedResponse = await getCachedResponse(cacheKey);
     if (cachedResponse) {
-      console.log(`[Valora AI] Cache hit for key: ${cacheKey.substring(0, 8)}...`);
+      console.log(`[Velora AI] Cache hit for key: ${cacheKey.substring(0, 8)}...`);
       
       // Penting: Tetap simpan ke Supabase jika belum ada (untuk persistensi saat refresh)
       if (chatId && cachedResponse.trim()) {
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
             .update({ updated_at: new Date().toISOString() })
             .eq("id", chatId);
         } catch (dbErr) {
-          console.error("[Valora AI] Failed to save cached response to DB:", dbErr);
+          console.error("[Velora AI] Failed to save cached response to DB:", dbErr);
         }
       }
 
@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
 
           if (fullResponse.trim()) {
             // Simpan ke Cache Redis
-            console.log(`[Valora AI] Saving response to cache (${fullResponse.length} chars)`);
+            console.log(`[Velora AI] Saving response to cache (${fullResponse.length} chars)`);
             await setCachedResponse(cacheKey, fullResponse);
 
             // Simpan ke Supabase
@@ -146,12 +146,12 @@ export async function POST(req: NextRequest) {
                   .update({ updated_at: new Date().toISOString() })
                   .eq("id", chatId);
               } catch (dbErr) {
-                console.error("[Valora AI] Failed to save response to DB:", dbErr);
+                console.error("[Velora AI] Failed to save response to DB:", dbErr);
               }
             }
           }
         } catch (err) {
-          console.error("[Valora AI] Streaming error:", err);
+          console.error("[Velora AI] Streaming error:", err);
           controller.error(err);
         } finally {
           await releaseLock(cacheKey);
@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error("[Valora AI] Chat API Error:", error);
+    console.error("[Velora AI] Chat API Error:", error);
     return new Response(
       JSON.stringify({ error: error.message || "Internal server error" }),
       { status: 500, headers: { "Content-Type": "application/json" } }
