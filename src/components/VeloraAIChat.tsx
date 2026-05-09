@@ -90,38 +90,46 @@ const VeloraAIChat: FC<VeloraAIChatProps> = ({ isDemo = false }) => {
     const isSendingRef = useRef(false);
     const skipNextFetchRef = useRef(false);
     const isReceivingStreamRef = useRef(false);
+    
+    // Memory Leak Prevention: Abort ongoing requests on unmount
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
 
     const activeChat = chatList.find((c) => c.id === activeChatId);
     const messages = activeChat ? activeChat.messages : [];
 
-    const updateChatMessages = (chatId: string, updater: (prev: Message[]) => Message[]) => {
+    const updateChatMessages = useCallback((chatId: string, updater: (prev: Message[]) => Message[]) => {
         setChatList((prevList) => {
-            const chatExists = prevList.some(c => c.id === chatId);
-            if (!chatExists) return prevList;
+            const chatIndex = prevList.findIndex(c => c.id === chatId);
+            if (chatIndex === -1) return prevList;
 
-            return prevList.map((chat) => {
-                if (chat.id === chatId) {
-                    const nextMessages = updater(chat.messages);
-                    
-                    // Deduplicate messages by ID
-                    const uniqueMessages = nextMessages.filter((msg, index, self) => {
-                        return self.findIndex((m) => m.id === msg.id) === index;
-                    });
-                    
-                    let title = chat.title;
-                    if (title === "New Chat" && uniqueMessages.length > 0) {
-                        const firstMsg = uniqueMessages.find((m) => m.role === "user");
-                        if (firstMsg) {
-                            title = firstMsg.content.substring(0, 40) + (firstMsg.content.length > 40 ? "..." : "");
-                        }
-                    }
-
-                    return { ...chat, title, updatedAt: new Date(), messages: uniqueMessages };
-                }
-                return chat;
+            const chat = prevList[chatIndex];
+            const nextMessages = updater(chat.messages);
+            
+            // Deduplicate messages by ID efficiently
+            const uniqueMessages = nextMessages.filter((msg, index, self) => {
+                return self.findIndex((m) => m.id === msg.id) === index;
             });
+            
+            let title = chat.title;
+            if (title === "New Chat" && uniqueMessages.length > 0) {
+                const firstMsg = uniqueMessages.find((m) => m.role === "user");
+                if (firstMsg) {
+                    title = firstMsg.content.substring(0, 40) + (firstMsg.content.length > 40 ? "..." : "");
+                }
+            }
+
+            const updatedChat = { ...chat, title, updatedAt: new Date(), messages: uniqueMessages };
+            const newList = [...prevList];
+            newList[chatIndex] = updatedChat;
+            return newList;
         });
-    };
+    }, []);
 
     const handleCreateChat = () => {
         if (abortControllerRef.current) {
@@ -224,7 +232,9 @@ const VeloraAIChat: FC<VeloraAIChatProps> = ({ isDemo = false }) => {
         
         const observer = new ResizeObserver((entries) => {
             for (let entry of entries) {
-                setInputHeight(entry.contentRect.height);
+                // Use getBoundingClientRect to include padding and margins
+                const height = entry.target.getBoundingClientRect().height;
+                setInputHeight(height);
             }
         });
         
@@ -233,13 +243,21 @@ const VeloraAIChat: FC<VeloraAIChatProps> = ({ isDemo = false }) => {
     }, []);
 
     useEffect(() => {
+        let prevWidth = typeof window !== "undefined" ? window.innerWidth : 0;
+        
         const handleResize = () => {
-            const isSmallScreen = window.innerWidth < 768;
-            if (isSmallScreen) {
+            const currentWidth = window.innerWidth;
+            const isDesktop = currentWidth >= 768;
+            const wasDesktop = prevWidth >= 768;
+
+            // Hanya tutup sidebar jika layar berubah dari desktop ke mobile
+            if (!isDesktop && wasDesktop) {
                 setIsSidebarOpen(false);
             }
+            
+            prevWidth = currentWidth;
         };
-        handleResize();
+
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
@@ -500,10 +518,11 @@ const VeloraAIChat: FC<VeloraAIChatProps> = ({ isDemo = false }) => {
                     <div 
                         ref={scrollContainerRef}
                         className={cn(
-                            "absolute inset-0 pt-16 custom-scrollbar scroll-smooth",
-                            messages.length > 0 ? "overflow-y-auto" : "overflow-hidden"
+                            "absolute top-16 left-0 right-0 custom-scrollbar scroll-smooth flex flex-col",
+                            messages.length > 0 ? "overflow-y-auto" : "overflow-y-hidden max-md:overflow-y-auto md:no-scrollbar justify-center"
                         )}
                         style={{ 
+                            bottom: `${inputHeight}px`,
                             willChange: "transform", 
                             backfaceVisibility: "hidden", 
                             WebkitOverflowScrolling: "touch",
@@ -511,8 +530,7 @@ const VeloraAIChat: FC<VeloraAIChatProps> = ({ isDemo = false }) => {
                         }}
                     >
                         <div 
-                            className="max-w-3xl mx-auto w-full px-4 sm:px-6 flex flex-col min-h-full"
-                            style={{ paddingBottom: `${inputHeight + 24}px` }}
+                            className="max-w-3xl mx-auto w-full px-4 sm:px-6 flex flex-col min-h-full pb-8"
                         >
                             {isLoadingMessages ? (
                                 <div className="flex flex-col items-center justify-center w-full my-auto py-20 space-y-4">
@@ -520,7 +538,7 @@ const VeloraAIChat: FC<VeloraAIChatProps> = ({ isDemo = false }) => {
                                     <p className="text-slate-400 animate-pulse text-sm">Memuat percakapan...</p>
                                 </div>
                             ) : !activeChatId ? (
-                                <div className="flex flex-col items-center w-full my-auto pt-10 pb-20 sm:pt-16 sm:pb-32 space-y-8 sm:space-y-12">
+                                <div className="flex flex-col items-center w-full pt-4 pb-8 sm:pt-6 sm:pb-12 md:pt-8 md:pb-16 space-y-6 sm:space-y-10">
                                     <motion.div
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
@@ -543,13 +561,13 @@ const VeloraAIChat: FC<VeloraAIChatProps> = ({ isDemo = false }) => {
                                                 animate={{ opacity: 1, y: 0 }}
                                                 transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
                                                 onClick={() => handleSend(action.label + " " + action.detail)}
-                                                className="group p-3 sm:p-4 bg-slate-900/50 hover:bg-slate-800/80 border border-white/5 hover:border-indigo-500/40 rounded-2xl text-left transition-all duration-300 shadow-xl"
+                                                className="group p-4 sm:p-4 bg-slate-900/50 hover:bg-slate-800/80 border border-white/5 hover:border-indigo-500/40 rounded-2xl text-left transition-all duration-300 shadow-xl"
                                             >
                                                 <div className="flex items-center gap-3 mb-2">
-                                                    <div className="shrink-0 p-2 rounded-lg bg-slate-800 group-hover:bg-indigo-500/20 transition-colors">{action.icon}</div>
-                                                    <span className="text-sm font-semibold text-slate-200 group-hover:text-white leading-tight">{action.label}</span>
+                                                    <div className="shrink-0 p-2 sm:p-2 rounded-lg bg-slate-800 group-hover:bg-indigo-500/20 transition-colors">{action.icon}</div>
+                                                    <span className="text-base sm:text-sm font-bold sm:font-semibold text-slate-200 group-hover:text-white leading-tight">{action.label}</span>
                                                 </div>
-                                                <p className="text-xs text-slate-500 group-hover:text-slate-400 ml-10 leading-relaxed">{action.detail}</p>
+                                                <p className="text-[13px] sm:text-xs text-slate-500 group-hover:text-slate-400 ml-11 sm:ml-10 leading-relaxed">{action.detail}</p>
                                             </motion.button>
                                         ))}
                                     </div>
@@ -615,7 +633,7 @@ const VeloraAIChat: FC<VeloraAIChatProps> = ({ isDemo = false }) => {
 
                     <div 
                         ref={inputContainerRef}
-                        className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none bg-linear-to-t from-slate-950 via-slate-950/80 to-transparent pt-4 pb-safe"
+                        className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none pb-4 sm:pb-safe"
                     >
                         <div className="max-w-3xl mx-auto w-full px-4 sm:px-6 pointer-events-auto">
                             <InputArea

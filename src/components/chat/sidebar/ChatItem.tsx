@@ -7,7 +7,7 @@
 
 "use client";
 
-import { FC, useState, useRef, useEffect } from "react";
+import { FC, useState, useRef, useEffect, memo } from "react";
 import { ChatSession } from "@/components/chat/types";
 import { MessageSquare, Pencil, Trash2, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,7 @@ interface ChatItemProps {
   onDelete: (id: string) => void;
 }
 
-export const ChatItem: FC<ChatItemProps> = ({ session, isActive, onClick, onRename, onDelete }) => {
+export const ChatItem: FC<ChatItemProps> = memo(({ session, isActive, onClick, onRename, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(session.title);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -116,4 +116,6 @@ export const ChatItem: FC<ChatItemProps> = ({ session, isActive, onClick, onRena
       </div>
     </button>
   );
-};
+});
+
+ChatItem.displayName = "ChatItem";

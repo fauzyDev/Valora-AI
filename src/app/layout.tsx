@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "id_ID",
-    url: "https://velora-ai.vercel.app",
+    url: "https://valora-ai-theta.vercel.app",
     title: "VeloraAI | The Next Generation of Intelligence",
     description: "Experience the future of AI chat with Velora AI. Fast, secure, and incredibly smart.",
     siteName: "VeloraAI",
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" className={cn("dark text-foreground bg-background", geist.variable, spaceGrotesk.variable, inter.variable)} suppressHydrationWarning>
-      <body className={cn(inter.className, "antialiased scroll-smooth overscroll-none min-h-screen bg-white dark:bg-[#0d0d0d]")}>
+      <body className={cn(inter.className, "antialiased scroll-smooth overscroll-none min-h-screen bg-background")}>
         <TooltipProvider>
           {children}
           <Toaster position="top-center"/>

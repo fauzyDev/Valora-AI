@@ -4,14 +4,14 @@
  * dan tombol menu mobile.
  */
 
-import { FC } from "react";
+import { FC, memo } from "react";
 import { Bell, Sparkles } from "lucide-react";
 
 interface TopNavProps {
   onToggleSidebar: () => void;
 }
 
-export const TopNav: FC<TopNavProps> = ({ onToggleSidebar }) => {
+export const TopNav: FC<TopNavProps> = memo(({ onToggleSidebar }) => {
   return (
     <header className="fixed top-0 right-0 left-0 md:left-64 z-40 flex justify-between items-center px-3 sm:px-5 md:px-8 h-16 bg-slate-950/60 backdrop-blur-lg border-b border-white/5 transition-all duration-300">
       <div className="flex items-center gap-3">
@@ -38,4 +38,6 @@ export const TopNav: FC<TopNavProps> = ({ onToggleSidebar }) => {
       </div>
     </header>
   );
-};
+});
+
+TopNav.displayName = "TopNav";

@@ -43,7 +43,7 @@ const AIMessageComponent: FC<AIMessageProps> = ({ content, isStreaming }) => {
         </div>
         
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-1">
           <button
             onClick={handleCopy}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 hover:text-white text-xs font-medium transition-colors duration-200"

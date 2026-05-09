@@ -6,7 +6,7 @@
  * kontrol pengguna.
  */
 
-import { FC, useState } from "react";
+import { FC, useState, memo } from "react";
 import { SidebarFooter } from "./SidebarFooter";
 import { ChatHistoryList } from "./ChatHistoryList";
 import { ChatSession } from "@/components/chat/types";
@@ -27,7 +27,7 @@ interface SidebarProps {
   isDemo?: boolean;
 }
 
-export const Sidebar: FC<SidebarProps> = ({ 
+export const Sidebar: FC<SidebarProps> = memo(({ 
   isOpen, 
   onClose,
   chatList,
@@ -52,6 +52,7 @@ export const Sidebar: FC<SidebarProps> = ({
       
       {/* Sidebar */}
       <aside 
+        onClick={(e) => e.stopPropagation()}
         className={cn(
           "w-64 border-r border-white/10 bg-slate-900/50 backdrop-blur-xl h-screen fixed left-0 top-0 flex flex-col z-50 transition-transform duration-300 ease-in-out shadow-2xl shadow-black/50",
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
@@ -147,4 +148,6 @@ export const Sidebar: FC<SidebarProps> = ({
       </aside>
     </>
   );
-}
+});
+
+Sidebar.displayName = "Sidebar";

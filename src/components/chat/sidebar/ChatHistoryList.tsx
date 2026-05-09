@@ -8,7 +8,7 @@
 
 "use client";
 
-import { FC } from "react";
+import { FC, useMemo, memo } from "react";
 import { ChatSession } from "@/components/chat/types";
 import { ChatItem } from "./ChatItem";
 
@@ -28,7 +28,7 @@ type GroupedChats = {
   Older: ChatSession[];
 };
 
-export const ChatHistoryList: FC<ChatHistoryListProps> = ({
+export const ChatHistoryList: FC<ChatHistoryListProps> = memo(({
   chatList,
   activeChatId,
   searchTerm,
@@ -36,47 +36,49 @@ export const ChatHistoryList: FC<ChatHistoryListProps> = ({
   onRenameChat,
   onDeleteChat,
 }) => {
-  const filtered = chatList.filter((chat) =>
-    chat.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const groupedChats = useMemo(() => {
+    const filtered = chatList.filter((chat) =>
+      chat.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-  const groups: GroupedChats = {
-    Today: [],
-    Yesterday: [],
-    "Last 7 Days": [],
-    Older: [],
-  };
+    const groups: GroupedChats = {
+      Today: [],
+      Yesterday: [],
+      "Last 7 Days": [],
+      Older: [],
+    };
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
 
-  const last7Days = new Date(today);
-  last7Days.setDate(last7Days.getDate() - 7);
+    const last7Days = new Date(today);
+    last7Days.setDate(last7Days.getDate() - 7);
 
-  filtered.forEach((chat) => {
-    const updatedAt = new Date(chat.updatedAt);
-    updatedAt.setHours(0, 0, 0, 0);
+    filtered.forEach((chat) => {
+      const updatedAt = new Date(chat.updatedAt);
+      updatedAt.setHours(0, 0, 0, 0);
 
-    if (updatedAt.getTime() === today.getTime()) {
-      groups.Today.push(chat);
-    } else if (updatedAt.getTime() === yesterday.getTime()) {
-      groups.Yesterday.push(chat);
-    } else if (updatedAt >= last7Days) {
-      groups["Last 7 Days"].push(chat);
-    } else {
-      groups.Older.push(chat);
-    }
-  });
+      if (updatedAt.getTime() === today.getTime()) {
+        groups.Today.push(chat);
+      } else if (updatedAt.getTime() === yesterday.getTime()) {
+        groups.Yesterday.push(chat);
+      } else if (updatedAt >= last7Days) {
+        groups["Last 7 Days"].push(chat);
+      } else {
+        groups.Older.push(chat);
+      }
+    });
 
-  // Sort each group by date descending
-  Object.values(groups).forEach((group) => {
-    group.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-  });
+    // Sort each group by date descending
+    Object.values(groups).forEach((group) => {
+      group.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+    });
 
-  const groupedChats = groups;
+    return groups;
+  }, [chatList, searchTerm]);
 
   const hasChats = chatList.length > 0;
   const hasSearchResults = Object.values(groupedChats).some((group) => group.length > 0);
@@ -126,4 +128,6 @@ export const ChatHistoryList: FC<ChatHistoryListProps> = ({
       )}
     </div>
   );
-};
+});
+
+ChatHistoryList.displayName = "ChatHistoryList";
